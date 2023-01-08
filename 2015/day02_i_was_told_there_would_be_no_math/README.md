@@ -26,7 +26,8 @@ create a makefile for these at some point.
 * `RUST_LOG=debug cargo run` shows both the debug and info messages
 * `cargo test` runs all tests
 * `cargo test part1_tests` runs the part1 tests
-* `RUST_LOG=debug cargo test part1_tests -- --nocapture` runs the part1 tests and shows the debug messages
+* `RUST_LOG=debug cargo test part1_tests -- --nocapture` runs the part1 tests
+and shows the debug messages
 
 I experimented a bit with the [bench] feature on rust nightly but decided
 against it after a while, I'd like to keep these solutions on stable. I'll
@@ -70,3 +71,48 @@ error: could not compile `day02_i_was_told_there_would_be_no_math` due to previo
 I still haven't wrapped my head around why I had to do this, I'll append an
 explanation to this README once I figure it out. I blindly followed the
 compiler instructions during aoc 2022, it's not a good habit.
+
+---
+
+All right, time to attempt an explanation for the above temporary value issue.
+The first thing which was useful in understanding this was that when a function
+returns something then that return value is owned by the function's caller.
+
+In our case, `line.unwrap()` returns a String. But who should own that string?
+When writing `let line = line.unwrap()` it is obvious that the owner is the
+line variable on the left hand of the assignment (note that I abuse scoping
+rules here, the line on the left hand of the assignment and the one on the
+right hand are two separate variables, but the one on the left will overshadow
+the one on the right in subsequent statements. This is why I think this is
+ugly, on one hand I am conceptually still trying to get a line to parse so
+the naming makes sense, on the other hand I think using variables with the
+same name in the same scope is poor form). But who is the owner when chaining
+calls?
+
+I think the 100% correct answer for this (which I am still struggling to grok)
+lies in [here](https://doc.rust-lang.org/reference/destructors.html#temporary-scopes)
+and in [here](https://doc.rust-lang.org/reference/expressions.html#place-expressions-and-value-expressions).
+My interpretation is that a temporary scope is created when chaining calls and
+at the end of that scope everything gets dropped except the result of the very
+last thing being called (which is copy/moved to the caller's context, depending
+on the return value's type).
+
+In our case, the `split()` function works on the String returned by `line.unwrap()`
+and its result has the same lifteime as that String. So far so good, were we
+to stop here, it would make sense that we couldn't use the result of the `split()`
+function since it would die along with the original String at the end of the
+call chain.
+
+The subsequent `map()` doesn't explictly declare a lifetime but I suspect that
+it acts lazily and doesn't execute the closure unless really needed (aka when
+calling `next()` on the resulting iterator later on) which is why it still
+needs the object it acts upon (aka the String) to be alive at the point you
+call `next()`. Thus, at the end of the map call we are in a situation where
+we're returning an iterator which depends on previous data (aka the String) to
+do its job. But the String will be dropped at the end of the call chain so
+the iterator doesn't have anything to work on, ergo the compiler error.
+
+I am still not satisfied with what I wrote above, I have a nagging feeling that
+there are some other things in play which I am missing so I will probably come
+back to this in the future and further refine the explanation. This will do for
+now.
