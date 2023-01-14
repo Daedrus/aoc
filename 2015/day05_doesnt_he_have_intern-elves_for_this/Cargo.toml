@@ -1,0 +1,11 @@
+[package]
+name = "day05_doesnt_he_have_intern-elves_for_this"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "*"
+env_logger = "*"
+itertools = "*"
