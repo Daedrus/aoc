@@ -91,6 +91,7 @@ fn part1<T: BufRead>(input: &mut T) -> usize {
     input.lines().for_each(|line| {
         let instruction: Instruction = line.unwrap().as_str().into();
 
+        #[allow(clippy::needless_range_loop)]
         for i in (instruction.coord_pair1.0)..=(instruction.coord_pair2.0) {
             for j in (instruction.coord_pair1.1)..=(instruction.coord_pair2.1) {
                 match instruction.light_action {
@@ -116,6 +117,7 @@ fn part2<T: BufRead>(input: &mut T) -> usize {
     input.lines().for_each(|line| {
         let instruction: Instruction = line.unwrap().as_str().into();
 
+        #[allow(clippy::needless_range_loop)]
         for i in (instruction.coord_pair1.0)..=(instruction.coord_pair2.0) {
             for j in (instruction.coord_pair1.1)..=(instruction.coord_pair2.1) {
                 match instruction.light_action {

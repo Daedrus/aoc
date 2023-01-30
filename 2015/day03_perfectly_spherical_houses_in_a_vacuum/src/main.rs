@@ -21,7 +21,7 @@ fn part1<T: BufRead>(input: &mut T) -> String {
 
     input
         .lines()
-        .nth(0)
+        .next()
         .unwrap()
         .unwrap()
         .chars()
@@ -53,7 +53,7 @@ fn part2<T: BufRead>(input: &mut T) -> String {
 
     input
         .lines()
-        .nth(0)
+        .next()
         .unwrap()
         .unwrap()
         .chars()

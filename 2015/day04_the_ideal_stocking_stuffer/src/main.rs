@@ -18,13 +18,13 @@ fn find_digest_with_prefix(secret_key: &str, prefix: &str) -> Option<String> {
 }
 
 fn part1<T: BufRead>(input: &mut T) -> Option<String> {
-    let secret_key = input.lines().nth(0).unwrap().unwrap();
+    let secret_key = input.lines().next().unwrap().unwrap();
 
     find_digest_with_prefix(&secret_key, "00000")
 }
 
 fn part2<T: BufRead>(input: &mut T) -> Option<String> {
-    let secret_key = input.lines().nth(0).unwrap().unwrap();
+    let secret_key = input.lines().next().unwrap().unwrap();
 
     find_digest_with_prefix(&secret_key, "000000")
 }

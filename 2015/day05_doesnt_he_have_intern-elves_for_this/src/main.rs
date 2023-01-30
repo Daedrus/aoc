@@ -71,7 +71,7 @@ fn part2<T: BufRead>(input: &mut T) -> usize {
                 // want to add the same pair twice.
                 let pair = c1.to_string() + &c2.to_string();
                 if i == 0 {
-                    char_pairs.insert(pair.clone(), i);
+                    char_pairs.insert(pair, i);
                 }
 
                 // If insert() returns a value then the pair has been seen before
