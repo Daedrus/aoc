@@ -84,7 +84,7 @@ impl From<&str> for Instruction {
     }
 }
 
-fn part1<T: BufRead>(input: &mut T) -> usize {
+fn part1(input: &mut impl BufRead) -> usize {
     const GRID_SIZE: usize = 1000;
     let mut grid: [[LightState; GRID_SIZE]; GRID_SIZE] = [[LightState::Off; GRID_SIZE]; GRID_SIZE];
 
@@ -109,7 +109,7 @@ fn part1<T: BufRead>(input: &mut T) -> usize {
         .count()
 }
 
-fn part2<T: BufRead>(input: &mut T) -> usize {
+fn part2(input: &mut impl BufRead) -> usize {
     const GRID_SIZE: usize = 1000;
     // We use Vec here since an array of usize on the stack would overflow it
     let mut grid: Vec<Vec<usize>> = vec![vec![0; GRID_SIZE]; GRID_SIZE];

@@ -6,7 +6,7 @@ use std::{
     io::{self, BufRead, BufReader, Seek},
 };
 
-fn part1<T: BufRead>(input: &mut T) -> usize {
+fn part1(input: &mut impl BufRead) -> usize {
     input
         .lines()
         .filter(|line| {
@@ -42,7 +42,7 @@ fn part1<T: BufRead>(input: &mut T) -> usize {
         .count()
 }
 
-fn part2<T: BufRead>(input: &mut T) -> usize {
+fn part2(input: &mut impl BufRead) -> usize {
     input
         .lines()
         .filter(|line| {

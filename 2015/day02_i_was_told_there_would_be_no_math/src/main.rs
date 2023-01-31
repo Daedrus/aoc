@@ -25,7 +25,7 @@ fn gifts<T: BufRead>(input: &mut T) -> Vec<Gift> {
         .collect::<Vec<Gift>>()
 }
 
-fn part1<T: BufRead>(input: &mut T) -> String {
+fn part1(input: &mut impl BufRead) -> String {
     gifts(input)
         .iter()
         .map(|gift| {
@@ -46,7 +46,7 @@ fn part1<T: BufRead>(input: &mut T) -> String {
         .to_string()
 }
 
-fn part2<T: BufRead>(input: &mut T) -> String {
+fn part2(input: &mut impl BufRead) -> String {
     gifts(input)
         .iter()
         .map(|gift| {

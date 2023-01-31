@@ -4,7 +4,7 @@ use std::{
     io::{self, BufRead, BufReader, Seek},
 };
 
-fn part1<T: BufRead>(input: &mut T) -> String {
+fn part1(input: &mut impl BufRead) -> String {
     input
         .lines()
         .next()
@@ -22,7 +22,7 @@ fn part1<T: BufRead>(input: &mut T) -> String {
         .to_string()
 }
 
-fn part2<T: BufRead>(input: &mut T) -> String {
+fn part2(input: &mut impl BufRead) -> String {
     match input
         .lines()
         .next()

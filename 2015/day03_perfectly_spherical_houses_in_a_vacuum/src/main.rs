@@ -13,7 +13,7 @@ struct Position {
     y: isize,
 }
 
-fn part1<T: BufRead>(input: &mut T) -> String {
+fn part1(input: &mut impl BufRead) -> String {
     let mut visited_houses: HashSet<Position> = HashSet::new();
     let mut current_position: Position = Position { x: 0, y: 0 };
 
@@ -41,7 +41,7 @@ fn part1<T: BufRead>(input: &mut T) -> String {
     visited_houses.len().to_string()
 }
 
-fn part2<T: BufRead>(input: &mut T) -> String {
+fn part2(input: &mut impl BufRead) -> String {
     const NUMBER_OF_SANTAS: usize = 2;
 
     let mut visited_houses: HashSet<Position> = HashSet::new();
