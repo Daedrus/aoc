@@ -84,7 +84,7 @@ impl From<&str> for Instruction {
     }
 }
 
-fn part1(input: &mut impl BufRead) -> usize {
+fn part1(input: &mut impl BufRead) -> String {
     const GRID_SIZE: usize = 1000;
     let mut grid: [[LightState; GRID_SIZE]; GRID_SIZE] = [[LightState::Off; GRID_SIZE]; GRID_SIZE];
 
@@ -107,9 +107,10 @@ fn part1(input: &mut impl BufRead) -> usize {
         .flat_map(|r| r.iter())
         .filter(|&&l| l == LightState::On)
         .count()
+        .to_string()
 }
 
-fn part2(input: &mut impl BufRead) -> usize {
+fn part2(input: &mut impl BufRead) -> String {
     const GRID_SIZE: usize = 1000;
     // We use Vec here since an array of usize on the stack would overflow it
     let mut grid: Vec<Vec<usize>> = vec![vec![0; GRID_SIZE]; GRID_SIZE];
@@ -133,7 +134,9 @@ fn part2(input: &mut impl BufRead) -> usize {
         }
     });
 
-    grid.iter().fold(0, |sum, r| sum + r.iter().sum::<usize>())
+    grid.iter()
+        .fold(0, |sum, r| sum + r.iter().sum::<usize>())
+        .to_string()
 }
 
 fn main() -> io::Result<()> {
@@ -196,18 +199,18 @@ mod tests {
     fn part1_tests() {
         init();
 
-        assert_eq!(part1(&mut Cursor::new("turn on 0,0 through 0,9")), 10);
-        assert_eq!(part1(&mut Cursor::new("toggle 0,0 through 0,19")), 20);
-        assert_eq!(part1(&mut Cursor::new("turn off 0,0 through 0,19")), 0);
+        assert_eq!(part1(&mut Cursor::new("turn on 0,0 through 0,9")), "10");
+        assert_eq!(part1(&mut Cursor::new("toggle 0,0 through 0,19")), "20");
+        assert_eq!(part1(&mut Cursor::new("turn off 0,0 through 0,19")), "0");
     }
 
     #[test]
     fn part2_tests() {
         init();
 
-        assert_eq!(part2(&mut Cursor::new("turn on 0,0 through 0,9")), 10);
-        assert_eq!(part2(&mut Cursor::new("toggle 0,0 through 0,19")), 40);
-        assert_eq!(part2(&mut Cursor::new("turn off 0,0 through 0,19")), 0);
+        assert_eq!(part2(&mut Cursor::new("turn on 0,0 through 0,9")), "10");
+        assert_eq!(part2(&mut Cursor::new("toggle 0,0 through 0,19")), "40");
+        assert_eq!(part2(&mut Cursor::new("turn off 0,0 through 0,19")), "0");
     }
 
     #[test]
@@ -217,8 +220,8 @@ mod tests {
         let f = File::open("input").unwrap();
         let mut reader = BufReader::new(f);
 
-        assert_eq!(part1(&mut reader), 543903);
+        assert_eq!(part1(&mut reader), "543903");
         reader.rewind().unwrap();
-        assert_eq!(part2(&mut reader), 14687245);
+        assert_eq!(part2(&mut reader), "14687245");
     }
 }

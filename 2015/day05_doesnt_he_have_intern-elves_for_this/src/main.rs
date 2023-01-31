@@ -6,7 +6,7 @@ use std::{
     io::{self, BufRead, BufReader, Seek},
 };
 
-fn part1(input: &mut impl BufRead) -> usize {
+fn part1(input: &mut impl BufRead) -> String {
     input
         .lines()
         .filter(|line| {
@@ -40,9 +40,10 @@ fn part1(input: &mut impl BufRead) -> usize {
             vowel_count >= 3 && double_letter && !contains_ab_cd_pq_xy
         })
         .count()
+        .to_string()
 }
 
-fn part2(input: &mut impl BufRead) -> usize {
+fn part2(input: &mut impl BufRead) -> String {
     input
         .lines()
         .filter(|line| {
@@ -99,6 +100,7 @@ fn part2(input: &mut impl BufRead) -> usize {
             repeating_letter && pair_appears_twice
         })
         .count()
+        .to_string()
 }
 
 fn main() -> io::Result<()> {
@@ -129,25 +131,25 @@ mod tests {
     fn part1_tests() {
         init();
 
-        assert_eq!(part1(&mut Cursor::new("ugknbfddgicrmopn")), 1);
-        assert_eq!(part1(&mut Cursor::new("aaa")), 1);
-        assert_eq!(part1(&mut Cursor::new("jchzalrnumimnmhp")), 0);
-        assert_eq!(part1(&mut Cursor::new("haegwjzuvuyypxyu")), 0);
-        assert_eq!(part1(&mut Cursor::new("dvszwmarrgswjxmb")), 0);
+        assert_eq!(part1(&mut Cursor::new("ugknbfddgicrmopn")), "1");
+        assert_eq!(part1(&mut Cursor::new("aaa")), "1");
+        assert_eq!(part1(&mut Cursor::new("jchzalrnumimnmhp")), "0");
+        assert_eq!(part1(&mut Cursor::new("haegwjzuvuyypxyu")), "0");
+        assert_eq!(part1(&mut Cursor::new("dvszwmarrgswjxmb")), "0");
     }
 
     #[test]
     fn part2_tests() {
         init();
 
-        assert_eq!(part2(&mut Cursor::new("qjhvhtzxzqqjkmpb")), 1);
-        assert_eq!(part2(&mut Cursor::new("xxyxx")), 1);
-        assert_eq!(part2(&mut Cursor::new("uurcxstgmygtbstg")), 0);
-        assert_eq!(part2(&mut Cursor::new("ieodomkazucvgmuy")), 0);
-        assert_eq!(part2(&mut Cursor::new("aaa")), 0);
-        assert_eq!(part2(&mut Cursor::new("aaaa")), 1);
-        assert_eq!(part2(&mut Cursor::new("aaaxyx")), 0);
-        assert_eq!(part2(&mut Cursor::new("xyxaaa")), 0);
+        assert_eq!(part2(&mut Cursor::new("qjhvhtzxzqqjkmpb")), "1");
+        assert_eq!(part2(&mut Cursor::new("xxyxx")), "1");
+        assert_eq!(part2(&mut Cursor::new("uurcxstgmygtbstg")), "0");
+        assert_eq!(part2(&mut Cursor::new("ieodomkazucvgmuy")), "0");
+        assert_eq!(part2(&mut Cursor::new("aaa")), "0");
+        assert_eq!(part2(&mut Cursor::new("aaaa")), "1");
+        assert_eq!(part2(&mut Cursor::new("aaaxyx")), "0");
+        assert_eq!(part2(&mut Cursor::new("xyxaaa")), "0");
     }
 
     #[test]
@@ -157,8 +159,8 @@ mod tests {
         let f = File::open("input").unwrap();
         let mut reader = BufReader::new(f);
 
-        assert_eq!(part1(&mut reader), 258);
+        assert_eq!(part1(&mut reader), "258");
         reader.rewind().unwrap();
-        assert_eq!(part2(&mut reader), 53);
+        assert_eq!(part2(&mut reader), "53");
     }
 }
