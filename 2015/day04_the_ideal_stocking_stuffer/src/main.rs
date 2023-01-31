@@ -64,4 +64,18 @@ mod tests {
             Some("1048970".to_string())
         );
     }
+
+    #[test]
+    fn check_answers() {
+        init();
+
+        assert_eq!(
+            part1(&mut Cursor::new("iwrupvqb")),
+            Some("346386".to_string())
+        );
+        assert_eq!(
+            part2(&mut Cursor::new("iwrupvqb")),
+            Some("9958218".to_string())
+        );
+    }
 }

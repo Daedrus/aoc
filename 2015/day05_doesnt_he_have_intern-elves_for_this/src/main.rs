@@ -149,4 +149,16 @@ mod tests {
         assert_eq!(part2(&mut Cursor::new("aaaxyx")), 0);
         assert_eq!(part2(&mut Cursor::new("xyxaaa")), 0);
     }
+
+    #[test]
+    fn check_answers() {
+        init();
+
+        let f = File::open("input").unwrap();
+        let mut reader = BufReader::new(f);
+
+        assert_eq!(part1(&mut reader), 258);
+        reader.rewind().unwrap();
+        assert_eq!(part2(&mut reader), 53);
+    }
 }

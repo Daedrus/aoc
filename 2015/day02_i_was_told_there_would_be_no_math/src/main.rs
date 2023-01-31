@@ -106,4 +106,16 @@ mod tests {
         assert_eq!(part2(&mut Cursor::new("2x3x4")), "34");
         assert_eq!(part2(&mut Cursor::new("1x1x10")), "14");
     }
+
+    #[test]
+    fn check_answers() {
+        init();
+
+        let f = File::open("input").unwrap();
+        let mut reader = BufReader::new(f);
+
+        assert_eq!(part1(&mut reader), "1598415");
+        reader.rewind().unwrap();
+        assert_eq!(part2(&mut reader), "3812909");
+    }
 }

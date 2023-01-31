@@ -100,4 +100,16 @@ mod tests {
         assert_eq!(part2(&mut Cursor::new("()())")), "5");
         assert_eq!(part2(&mut Cursor::new("((((")), "-1");
     }
+
+    #[test]
+    fn check_answers() {
+        init();
+
+        let f = File::open("input").unwrap();
+        let mut reader = BufReader::new(f);
+
+        assert_eq!(part1(&mut reader), "138");
+        reader.rewind().unwrap();
+        assert_eq!(part2(&mut reader), "1771");
+    }
 }

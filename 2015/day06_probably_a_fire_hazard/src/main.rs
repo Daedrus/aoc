@@ -209,4 +209,16 @@ mod tests {
         assert_eq!(part2(&mut Cursor::new("toggle 0,0 through 0,19")), 40);
         assert_eq!(part2(&mut Cursor::new("turn off 0,0 through 0,19")), 0);
     }
+
+    #[test]
+    fn check_answers() {
+        init();
+
+        let f = File::open("input").unwrap();
+        let mut reader = BufReader::new(f);
+
+        assert_eq!(part1(&mut reader), 543903);
+        reader.rewind().unwrap();
+        assert_eq!(part2(&mut reader), 14687245);
+    }
 }

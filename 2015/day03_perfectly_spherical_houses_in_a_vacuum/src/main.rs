@@ -121,4 +121,16 @@ mod tests {
         // instruction at the end (assuming there are two of them)
         assert_eq!(part2(&mut Cursor::new("^v^")), "4");
     }
+
+    #[test]
+    fn check_answers() {
+        init();
+
+        let f = File::open("input").unwrap();
+        let mut reader = BufReader::new(f);
+
+        assert_eq!(part1(&mut reader), "2592");
+        reader.rewind().unwrap();
+        assert_eq!(part2(&mut reader), "2360");
+    }
 }
