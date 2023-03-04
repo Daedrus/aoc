@@ -8,5 +8,4 @@ edition = "2021"
 [dependencies]
 log = "*"
 env_logger = "*"
-nom = "7"
 itertools = "*"
