@@ -21,7 +21,7 @@ fn parse_input(input: &mut impl BufRead) -> (HashSet<String>, HashMap<(String, S
                 complete::i32,
                 tag(" happiness units by sitting next to "),
                 complete::alpha1,
-                nom::character::complete::char('.'),
+                complete::char('.'),
             ))(line.as_str())
             .unwrap();
 
