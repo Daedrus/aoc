@@ -1,4 +1,4 @@
-use log::{debug, info};
+use log::info;
 use nom::{bytes::complete::tag, character::complete, sequence::tuple};
 use std::{
     fs::File,
@@ -15,36 +15,33 @@ struct Reindeer {
 }
 
 fn parse_input(input: &mut impl BufRead) -> Vec<Reindeer> {
-    let mut reindeer: Vec<Reindeer> = Vec::new();
+    input
+        .lines()
+        .map(|line| {
+            let line = line.unwrap();
 
-    input.lines().for_each(|line| {
-        let line = line.unwrap();
+            let (_, (_, _, speed, _, flight_duration, _, rest_duration, _)) =
+                tuple::<_, _, nom::error::Error<_>, _>((
+                    complete::alpha1,
+                    tag(" can fly "),
+                    complete::u32,
+                    tag(" km/s for "),
+                    complete::u32,
+                    tag(" seconds, but then must rest for "),
+                    complete::u32,
+                    tag(" seconds."),
+                ))(line.as_str())
+                .unwrap();
 
-        let (_, (_, _, speed, _, flight_duration, _, rest_duration, _)) =
-            tuple::<_, _, nom::error::Error<_>, _>((
-                complete::alpha1,
-                tag(" can fly "),
-                complete::u32,
-                tag(" km/s for "),
-                complete::u32,
-                tag(" seconds, but then must rest for "),
-                complete::u32,
-                tag(" seconds."),
-            ))(line.as_str())
-            .unwrap();
-
-        reindeer.push(Reindeer {
-            speed,
-            flight_duration,
-            rest_duration,
-            points: 0,
-            current_position: 0,
-        });
-    });
-
-    debug!("{:?}", reindeer);
-
-    reindeer
+            Reindeer {
+                speed,
+                flight_duration,
+                rest_duration,
+                points: 0,
+                current_position: 0,
+            }
+        })
+        .collect()
 }
 
 fn simulate_second(reindeer: &mut [Reindeer], second: u32) {
