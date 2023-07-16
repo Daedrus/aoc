@@ -25,7 +25,6 @@ fn part1(input: &mut impl BufRead) -> String {
         .unwrap()
         .unwrap()
         .chars()
-        .into_iter()
         .for_each(|instruction| {
             match instruction {
                 '<' => current_position.x -= 1,

@@ -29,7 +29,7 @@ fn part2(input: &mut impl BufRead) -> String {
         .unwrap()
         .unwrap()
         .chars()
-        .zip((1..).into_iter())
+        .zip(1..)
         .try_fold(0, |acc, (c, pos)| {
             debug!("{} {}", pos, c);
             let mut next = acc;

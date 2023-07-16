@@ -25,22 +25,28 @@ fn fill_containers(liters: u32, containers: &[u32]) -> Vec<Vec<u32>> {
     ) {
         if sorted_containers.len() != index {
             // Fill the current container
-            if liters == sorted_containers[index] {
-                // No liters left after filling the container, we found a solution
-                let mut solution = current_choices.clone();
-                solution.push(sorted_containers[index]);
-                solutions.push(solution);
-            } else if liters > sorted_containers[index] {
-                // Proceed to fill the other containers using the remaining liters
-                let mut new_choices = current_choices.clone();
-                new_choices.push(sorted_containers[index]);
-                fill_containers_rec(
-                    liters - sorted_containers[index],
-                    sorted_containers,
-                    index + 1,
-                    &mut new_choices,
-                    solutions,
-                );
+            match liters.cmp(&sorted_containers[index]) {
+                std::cmp::Ordering::Equal => {
+                    // No liters left after filling the container, we found a solution
+                    let mut solution = current_choices.clone();
+                    solution.push(sorted_containers[index]);
+                    solutions.push(solution);
+                }
+                std::cmp::Ordering::Greater => {
+                    // Proceed to fill the other containers using the remaining liters
+                    let mut new_choices = current_choices.clone();
+                    new_choices.push(sorted_containers[index]);
+                    fill_containers_rec(
+                        liters - sorted_containers[index],
+                        sorted_containers,
+                        index + 1,
+                        &mut new_choices,
+                        solutions,
+                    );
+                },
+                std::cmp::Ordering::Less => {
+                    // Not enough liters to fill the container, don't do anything
+                },
             }
 
             // Try and see if there are other solutions obtained by skipping the current container
