@@ -1,3 +1,7 @@
+// This implementation is not complete, it is missing part2, that's why
+// we allow unused imports here.
+#![allow(unused_imports)]
+
 use itertools::iproduct;
 use log::{debug, info};
 use nom::{bytes::complete::tag, character::complete, sequence::tuple};
@@ -74,7 +78,7 @@ fn part1(input: &mut impl BufRead) -> String {
     new_molecules.len().to_string()
 }
 
-fn part2(input: &mut impl BufRead) -> String {
+fn part2(_input: &mut impl BufRead) -> String {
     // let (rules, molecule) = parse_input(input);
     //
     // let mut inverted_rules = HashMap::new();

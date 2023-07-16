@@ -1,4 +1,5 @@
 use log::{debug, info};
+#[cfg(not(test))]
 use rand::{distributions::Alphanumeric, Rng};
 use std::{
     collections::HashMap,

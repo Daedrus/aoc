@@ -3,8 +3,6 @@ name = "day01_not_quite_lisp"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-log = "*"
-env_logger = "*"
+log.workspace = true
+env_logger.workspace = true

@@ -2,7 +2,7 @@ use log::info;
 use serde_json::Value;
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader, Cursor, Seek},
+    io::{self, BufRead, BufReader, Seek},
 };
 
 // Sum all numbers but skip the objects whose values fulfill the is_bad_value
@@ -64,6 +64,7 @@ fn main() -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use crate::*;
+    use std::io::Cursor;
 
     fn init() {
         let _ = env_logger::builder().is_test(true).try_init();

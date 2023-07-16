@@ -1,5 +1,5 @@
 use generator::{done, Gn};
-use log::{debug, info};
+use log::info;
 use std::io::{BufRead, Cursor};
 
 // Macro that defines a generator that generates all divisors

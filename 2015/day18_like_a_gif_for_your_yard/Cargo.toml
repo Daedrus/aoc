@@ -3,9 +3,7 @@ name = "day18_like_a_gif_for_your_yard"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-log = "*"
-env_logger = "*"
-ndarray = "*"
+log.workspace = true
+env_logger.workspace = true
+ndarray.workspace = true
