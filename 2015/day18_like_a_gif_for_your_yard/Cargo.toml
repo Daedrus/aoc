@@ -2,6 +2,7 @@
 name = "day18_like_a_gif_for_your_yard"
 version = "0.1.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 log.workspace = true

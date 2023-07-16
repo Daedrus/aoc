@@ -2,6 +2,7 @@
 name = "day13_knights_of_the_dinner_table"
 version = "0.1.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 log.workspace = true

@@ -2,6 +2,7 @@
 name = "day07_some_assembly_required"
 version = "0.1.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 log.workspace = true

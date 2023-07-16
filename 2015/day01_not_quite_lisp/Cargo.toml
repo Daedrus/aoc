@@ -2,6 +2,7 @@
 name = "day01_not_quite_lisp"
 version = "0.1.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 log.workspace = true

@@ -2,6 +2,7 @@
 name = "day03_perfectly_spherical_houses_in_a_vacuum"
 version = "0.1.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 log.workspace = true

@@ -2,6 +2,7 @@
 name = "day20_infinite_elves_and_infinite_houses"
 version = "0.1.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 log.workspace = true
