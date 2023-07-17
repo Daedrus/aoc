@@ -240,6 +240,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day23_opening_the_turing_lock"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "nom",
+]
+
+[[package]]
 name = "either"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
