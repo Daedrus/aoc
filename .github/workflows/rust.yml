@@ -9,23 +9,12 @@ env:
 
 jobs:
   build_and_test_solutions:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Install Rust version 1.71.0
-      uses: actions-rs/toolchain@v1
-      with:
-          toolchain: 1.71.0
-          override: true
-    - name: Build all solutions
-      uses: actions-rs/cargo@v1
-      with:
-        command: build
-        args: --verbose
-    - name: Run tests on all solutions
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --verbose
+      - uses: actions/checkout@v3
+      - name: "Instal Rust toolchain"
+        uses: dtolnay/rust-toolchain@1.71.0
+      - name: Build all solutions
+        run: cargo build
+      - name: Run tests on all solutions
+        run: cargo test
