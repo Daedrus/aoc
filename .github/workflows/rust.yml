@@ -12,9 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: "Instal Rust toolchain"
+
+      - name: "Install Rust toolchain"
         uses: dtolnay/rust-toolchain@1.71.0
-      - name: Build all solutions
+
+      - name: "Build all workspace solutions"
         run: cargo build
-      - name: Run tests on all solutions
+
+      - name: "Run tests on all workspace solutions"
         run: cargo test
