@@ -249,6 +249,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day24_it_hangs_in_the_balance"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "itertools",
+ "log",
+]
+
+[[package]]
 name = "either"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
