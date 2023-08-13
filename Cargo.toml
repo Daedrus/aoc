@@ -1,5 +1,5 @@
 [workspace]
-members = ["2015/*"]
+members = ["2015/*", "2016/*"]
 exclude = ["2022/*"]
 
 [workspace.package]
