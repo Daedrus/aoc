@@ -5,7 +5,7 @@ and try to do all of them all the way back from 2015.
 
 The solutions are organized in workspaces, one workspace per year.
 
-To run a solution and see its answers, go to a solutions folder and:
+To run a solution and see its answers, go to a solution's folder and:
 ```
 ~/aoc/2015/day01_not_quite_lisp ❯ RUST_LOG=info cargo run
     Finished dev [unoptimized + debuginfo] target(s) in 0.03s

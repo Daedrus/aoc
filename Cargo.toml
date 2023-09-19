@@ -4,7 +4,7 @@ exclude = ["2022/*"]
 resolver = "2"
 
 [workspace.package]
-rust-version = "1.72.0"
+rust-version = "1.72.1"
 
 [workspace.dependencies]
 log = "0.4.20"
