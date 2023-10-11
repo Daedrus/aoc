@@ -7,7 +7,7 @@ use log::{debug, info};
 use nom::{bytes::complete::tag, character::complete, sequence::tuple};
 use regex::Regex;
 use std::{
-    collections::{HashSet, VecDeque, HashMap},
+    collections::{HashMap, HashSet, VecDeque},
     fs::File,
     io::{self, BufRead, BufReader, Seek},
 };

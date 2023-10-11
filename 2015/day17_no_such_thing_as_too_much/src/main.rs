@@ -43,10 +43,10 @@ fn fill_containers(liters: u32, containers: &[u32]) -> Vec<Vec<u32>> {
                         &mut new_choices,
                         solutions,
                     );
-                },
+                }
                 std::cmp::Ordering::Less => {
                     // Not enough liters to fill the container, don't do anything
-                },
+                }
             }
 
             // Try and see if there are other solutions obtained by skipping the current container

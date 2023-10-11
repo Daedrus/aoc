@@ -43,7 +43,7 @@ fn part2(input: &mut impl BufRead) -> String {
     sum_all_numbers(
         &json_tree,
         |value| matches!(value, Value::String(s) if s.eq("red")),
-    ) .to_string()
+    ).to_string()
 }
 
 fn main() -> io::Result<()> {

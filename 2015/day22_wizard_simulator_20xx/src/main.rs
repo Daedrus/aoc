@@ -94,14 +94,18 @@ struct Spell {
 impl Spell {
     fn can_be_cast(&self, state: &State) -> bool {
         match self.spell_type {
-            SpellType::MagicMissile | SpellType::Drain =>
-                state.player.mana >= self.cost,
-            SpellType::Shield =>
-                state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Shield),
-            SpellType::Poison =>
-                state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Poison),
-            SpellType::Recharge =>
-                state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Recharge),
+            SpellType::MagicMissile | SpellType::Drain => {
+                state.player.mana >= self.cost
+            }
+            SpellType::Shield => {
+                state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Shield)
+            }
+            SpellType::Poison => {
+                state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Poison)
+            }
+            SpellType::Recharge => {
+                state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Recharge)
+            }
         }
     }
     fn cast(&self, state: &mut State) {
