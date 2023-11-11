@@ -49,6 +49,14 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ---
 
+When I start working on a new puzzle I generate a new project based on the
+template project using `cargo generate`. Like this:
+```
+~/aoc/2016 ❯ cargo generate -p ../template --name dayXX_new_puzzle --force
+```
+
+---
+
 I try to write a README in each solution, describing what I have learned and
 my thoughts on the particular problem. Take that stuff with a grain of salt, I
 am still learning so I am bound to make mistakes.
