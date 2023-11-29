@@ -1,5 +1,5 @@
 [workspace]
-members = ["2015/*", "2016/*"]
+members = ["2015/*", "2016/*", "2023/*"]
 exclude = ["2022/*"]
 resolver = "2"
 
