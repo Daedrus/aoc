@@ -64,6 +64,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day02_cube_conundrum"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "nom",
+]
+
+[[package]]
 name = "day02_i_was_told_there_would_be_no_math"
 version = "0.1.0"
 dependencies = [
