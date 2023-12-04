@@ -99,6 +99,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day04_scratchcards"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "nom",
+]
+
+[[package]]
 name = "day04_the_ideal_stocking_stuffer"
 version = "0.1.0"
 dependencies = [
