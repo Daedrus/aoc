@@ -135,6 +135,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day06_wait_for_it"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "nom",
+]
+
+[[package]]
 name = "day07_some_assembly_required"
 version = "0.1.0"
 dependencies = [
