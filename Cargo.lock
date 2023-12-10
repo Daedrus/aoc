@@ -210,6 +210,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day10_pipe_maze"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ndarray",
+]
+
+[[package]]
 name = "day11_corporate_policy"
 version = "0.1.0"
 dependencies = [
