@@ -228,6 +228,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "day11_cosmic_expansion"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "itertools",
+ "log",
+ "ndarray",
+]
+
+[[package]]
 name = "day12_jsabacusframework_io"
 version = "0.1.0"
 dependencies = [
