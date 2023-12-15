@@ -266,6 +266,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day15_lens_library"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "regex",
+]
+
+[[package]]
 name = "day15_science_for_hungry_people"
 version = "0.1.0"
 dependencies = [
