@@ -257,6 +257,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day13_point_of_incidence"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ndarray",
+]
+
+[[package]]
 name = "day14_reindeer_olympics"
 version = "0.1.0"
 dependencies = [
