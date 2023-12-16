@@ -303,6 +303,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day16_the_floor_will_be_lava"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ndarray",
+]
+
+[[package]]
 name = "day17_no_such_thing_as_too_much"
 version = "0.1.0"
 dependencies = [
