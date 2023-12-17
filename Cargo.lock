@@ -266,6 +266,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day14_parabolic_reflector_dish"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ndarray",
+]
+
+[[package]]
 name = "day14_reindeer_olympics"
 version = "0.1.0"
 dependencies = [
