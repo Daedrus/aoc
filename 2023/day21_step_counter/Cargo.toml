@@ -1,0 +1,10 @@
+[package]
+name = "day21_step_counter"
+version = "0.1.0"
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+log.workspace = true
+env_logger.workspace = true
+ndarray.workspace = true

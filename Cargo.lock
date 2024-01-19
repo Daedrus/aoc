@@ -126,6 +126,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day05_if_you_give_a_seed_a_fertilizer"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "nom",
+]
+
+[[package]]
 name = "day06_probably_a_fire_hazard"
 version = "0.1.0"
 dependencies = [
@@ -238,6 +247,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "day12_hot_springs"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+]
+
+[[package]]
 name = "day12_jsabacusframework_io"
 version = "0.1.0"
 dependencies = [
@@ -330,6 +347,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "day18_lavaduct_lagoon"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ndarray",
+ "nom",
+]
+
+[[package]]
 name = "day18_like_a_gif_for_your_yard"
 version = "0.1.0"
 dependencies = [
@@ -366,6 +393,15 @@ dependencies = [
  "itertools",
  "log",
  "nom",
+]
+
+[[package]]
+name = "day21_step_counter"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "ndarray",
 ]
 
 [[package]]
