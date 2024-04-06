@@ -6,7 +6,7 @@ use std::io::{BufRead, Cursor};
 // of a given number
 macro_rules! divisors {
     ($number: ident) => {{
-        Gn::new_scoped(|mut s| {
+        Gn::new_scoped(move |mut s| {
             for i in 1..=($number as f64).sqrt() as u64 + 1 {
                 if $number % i == 0 {
                     s.yield_(i);

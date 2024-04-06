@@ -10,7 +10,7 @@ use std::{
 // of two positive integers whose sum is $sum
 macro_rules! permutations2 {
     ($sum: ident) => {{
-        Gn::new_scoped(|mut s| {
+        Gn::new_scoped(move |mut s| {
             for i in 0..=$sum {
                 let j = $sum - i;
                 s.yield_([i, j]);
@@ -24,7 +24,7 @@ macro_rules! permutations2 {
 // of four positive integers whose sum is $sum
 macro_rules! permutations4 {
     ($sum: ident) => {{
-        Gn::new_scoped(|mut s| {
+        Gn::new_scoped(move |mut s| {
             for i in 0..=$sum {
                 for j in 0..=$sum - i {
                     for k in 0..=$sum - i - j {
