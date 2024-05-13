@@ -1,6 +1,7 @@
 use log::{debug, info};
 use regex::Regex;
 use std::{
+    fmt::Display,
     fs::File,
     io::{self, BufRead, BufReader, Seek},
 };
@@ -48,18 +49,19 @@ impl TryFrom<&str> for Step {
     }
 }
 
-impl ToString for Operation {
-    fn to_string(&self) -> String {
-        match self {
-            Operation::Dash => "-".to_string(),
-            Operation::Equals(focal_length) => format!("={}", focal_length),
-        }
+impl Display for Operation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}",
+            match self {
+                Operation::Dash => "-".to_string(),
+                Operation::Equals(focal_length) => format!("={}", focal_length),
+            })
     }
 }
 
-impl ToString for Step {
-    fn to_string(&self) -> String {
-        format!("{}{}", &self.label, &self.operation.to_string())
+impl Display for Step {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}{}", &self.label, &self.operation.to_string())
     }
 }
 

@@ -38,9 +38,7 @@ impl Row {
 
             if index == current_arrangement.len() && damaged_pattern.is_empty() {
                 1
-            } else if index == current_arrangement.len() {
-                0
-            } else if damaged_pattern.is_empty() && current_arrangement[index..].contains('#') {
+            } else if index == current_arrangement.len() || (damaged_pattern.is_empty() && current_arrangement[index..].contains('#')) {
                 0
             } else if damaged_pattern.is_empty() && !current_arrangement[index..].contains('#') {
                 1
@@ -60,14 +58,12 @@ impl Row {
                     '#' => {
                         if need_operational {
                             0
+                        } else if damaged_pattern[0] == 1 {
+                            damaged_pattern.pop_front();
+                            count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), true, false)
                         } else {
-                            if damaged_pattern[0] == 1 {
-                                damaged_pattern.pop_front();
-                                count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), true, false)
-                            } else {
-                                damaged_pattern[0] -= 1;
-                                count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), false, true)
-                            }
+                            damaged_pattern[0] -= 1;
+                            count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), false, true)
                         }
                     }
                     // Unknown spring

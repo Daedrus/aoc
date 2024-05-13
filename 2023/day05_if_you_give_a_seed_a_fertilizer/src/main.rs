@@ -98,17 +98,12 @@ fn part1(input: &mut impl BufRead) -> String {
             maps
                 .iter()
                 .for_each(|map| {
-                    match map
+                    if let Some(range) = map
                         .iter()
                         .find(|range| location >= range.source_range_start &&
-                                      location < range.source_range_start + range.range_length)
-                        {
-                            Some(range) => {
+                                      location < range.source_range_start + range.range_length) {
                                 location = range.destination_range_start + (location - range.source_range_start);
-                            }
-                            None => {},
-                        };
-
+                    }
                 });
 
             debug!("FINAL {}, {}", seed, location);
