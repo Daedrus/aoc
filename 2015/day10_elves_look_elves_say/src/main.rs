@@ -5,7 +5,7 @@ use std::io::{BufRead, Cursor};
 fn look_and_say_slow(input: &str) -> String {
     input
         .chars()
-        .group_by(|&x| x)
+        .chunk_by(|&x| x)
         .into_iter()
         .map(|(_, r)| r.collect())
         .collect::<Vec<String>>()

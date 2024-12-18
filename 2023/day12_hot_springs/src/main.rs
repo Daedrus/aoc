@@ -1,7 +1,7 @@
 use log::{info, debug};
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader}, usize, collections::VecDeque,
+    io::{self, BufRead, BufReader}, collections::VecDeque,
 };
 
 #[derive(Debug)]

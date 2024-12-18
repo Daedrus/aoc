@@ -6,7 +6,6 @@ use nom::{
     character::complete::{self, multispace1, alpha1},
     sequence::tuple,
 };
-use std::usize;
 use std::{
     fs::File,
     io::{self, BufRead, BufReader},

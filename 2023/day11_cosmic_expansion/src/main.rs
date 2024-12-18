@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use log::{debug, info};
 use ndarray::Array2;
-use std::{cmp, i64};
+use std::cmp;
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Seek},

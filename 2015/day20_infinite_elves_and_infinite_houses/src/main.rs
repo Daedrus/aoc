@@ -29,7 +29,7 @@ fn part1(input: &mut impl BufRead) -> String {
         .parse::<u64>()
         .unwrap();
 
-    for house in 1..=std::u64::MAX {
+    for house in 1..=u64::MAX {
         if divisors!(house).sum::<u64>() * 10 >= num {
             return house.to_string();
         }
@@ -47,7 +47,7 @@ fn part2(input: &mut impl BufRead) -> String {
         .parse::<u64>()
         .unwrap();
 
-    for house in 1..=std::u64::MAX {
+    for house in 1..=u64::MAX {
         if divisors!(house).filter(|d| *d * 50 >= house).sum::<u64>() * 11 >= num {
             return house.to_string();
         }
