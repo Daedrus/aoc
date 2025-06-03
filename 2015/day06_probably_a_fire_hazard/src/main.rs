@@ -1,4 +1,5 @@
 use log::{debug, info};
+use nom::Parser;
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Seek},
@@ -53,12 +54,12 @@ impl From<&str> for Instruction {
             branch::alt,
             bytes::complete::tag,
             character::complete,
-            sequence::{preceded, separated_pair, terminated, tuple},
+            sequence::{preceded, separated_pair, terminated},
             IResult,
         };
 
         fn light_action(input: &str) -> IResult<&str, &str> {
-            alt((tag("turn on"), tag("toggle"), tag("turn off")))(input)
+            alt((tag("turn on"), tag("toggle"), tag("turn off"))).parse(input)
         }
 
         fn range(input: &str) -> IResult<&str, (u32, u32)> {
@@ -66,11 +67,13 @@ impl From<&str> for Instruction {
                 preceded(complete::multispace0, complete::u32),
                 tag(","),
                 terminated(complete::u32, complete::multispace0),
-            )(input)
+            )
+            .parse(input)
         }
 
-        let (_, (action, (x0, x1), _, (y0, y1))) =
-            tuple((light_action, range, tag("through"), range))(input).unwrap();
+        let (_, (action, (x0, x1), _, (y0, y1))) = (light_action, range, tag("through"), range)
+            .parse(input)
+            .unwrap();
 
         debug!("{:?}", action);
         debug!("{} {}", x0, x1);

@@ -1,11 +1,7 @@
 use log::{debug, info};
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete,
-    multi::separated_list1,
-    sequence::{pair, tuple},
-    IResult,
+    branch::alt, bytes::complete::tag, character::complete, multi::separated_list1, sequence::pair,
+    IResult, Parser,
 };
 use std::{
     cmp::max,
@@ -35,7 +31,8 @@ fn parse_input(input: &mut impl BufRead) -> Vec<Game> {
         pair(
             complete::u32,
             alt((tag(" red"), tag(" green"), tag(" blue"))),
-        )(input)
+        )
+        .parse(input)
     }
 
     fn reveal_parser(input: &str) -> IResult<&str, Reveal> {
@@ -46,16 +43,18 @@ fn parse_input(input: &mut impl BufRead) -> Vec<Game> {
                 .map_or(0, |(number_of_cubes, _)| *number_of_cubes)
         }
 
-        separated_list1(tag(", "), color_parser)(input).map(|(s, v)| {
-            (
-                s,
-                Reveal {
-                    red_cubes: get_number_of_cubes(&v, " red"),
-                    green_cubes: get_number_of_cubes(&v, " green"),
-                    blue_cubes: get_number_of_cubes(&v, " blue"),
-                },
-            )
-        })
+        separated_list1(tag(", "), color_parser)
+            .parse(input)
+            .map(|(s, v)| {
+                (
+                    s,
+                    Reveal {
+                        red_cubes: get_number_of_cubes(&v, " red"),
+                        green_cubes: get_number_of_cubes(&v, " green"),
+                        blue_cubes: get_number_of_cubes(&v, " blue"),
+                    },
+                )
+            })
     }
 
     input
@@ -63,13 +62,14 @@ fn parse_input(input: &mut impl BufRead) -> Vec<Game> {
         .map(|line| {
             let line = line.unwrap();
 
-            let (_, (_, index, _, reveals)) = tuple::<_, _, nom::error::Error<_>, _>((
+            let (_, (_, index, _, reveals)) = (
                 tag("Game "),
                 complete::u32,
                 tag(": "),
                 separated_list1(tag("; "), reveal_parser),
-            ))(line.as_str())
-            .unwrap();
+            )
+                .parse(line.as_str())
+                .unwrap();
 
             Game { index, reveals }
         })

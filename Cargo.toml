@@ -4,17 +4,17 @@ exclude = ["2022/*"]
 resolver = "2"
 
 [workspace.package]
-rust-version = "1.83.0"
+rust-version = "1.87.0"
 
 [workspace.dependencies]
-log = "0.4.22"
-env_logger = "0.11.5"
-itertools = "0.13.0"
-nom = "7.1.3"
-rand = "0.8.5"
+log = "0.4.27"
+env_logger = "0.11.8"
+itertools = "0.14.0"
+nom = "8.0.0"
+rand = "0.9.1"
 md5 = "0.7.0"
-serde_json = "1.0.133"
-generator = "0.8.4"
+serde_json = "1.0.140"
+generator = "0.8.5"
 ndarray = "0.16.1"
 regex = "1.11.1"
 num = "0.4.3"

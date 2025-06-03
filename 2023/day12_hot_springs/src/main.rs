@@ -1,7 +1,8 @@
-use log::{info, debug};
+use log::{debug, info};
 use std::{
+    collections::VecDeque,
     fs::File,
-    io::{self, BufRead, BufReader}, collections::VecDeque,
+    io::{self, BufRead, BufReader},
 };
 
 #[derive(Debug)]
@@ -32,13 +33,18 @@ impl Row {
             index: usize,
             damaged_pattern: &mut VecDeque<usize>,
             need_operational: bool,
-            need_damaged: bool)
-        -> usize {
-            debug!("{}, {}, {:?}, {}", current_arrangement, index, damaged_pattern, need_operational);
+            need_damaged: bool,
+        ) -> usize {
+            debug!(
+                "{}, {}, {:?}, {}",
+                current_arrangement, index, damaged_pattern, need_operational
+            );
 
             if index == current_arrangement.len() && damaged_pattern.is_empty() {
                 1
-            } else if index == current_arrangement.len() || (damaged_pattern.is_empty() && current_arrangement[index..].contains('#')) {
+            } else if index == current_arrangement.len()
+                || (damaged_pattern.is_empty() && current_arrangement[index..].contains('#'))
+            {
                 0
             } else if damaged_pattern.is_empty() && !current_arrangement[index..].contains('#') {
                 1
@@ -51,7 +57,13 @@ impl Row {
                         if need_damaged {
                             0
                         } else {
-                            count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), false, false)
+                            count_arrangements_rec(
+                                current_arrangement,
+                                index + 1,
+                                &mut damaged_pattern.clone(),
+                                false,
+                                false,
+                            )
                         }
                     }
                     // Damaged spring
@@ -60,22 +72,47 @@ impl Row {
                             0
                         } else if damaged_pattern[0] == 1 {
                             damaged_pattern.pop_front();
-                            count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), true, false)
+                            count_arrangements_rec(
+                                current_arrangement,
+                                index + 1,
+                                &mut damaged_pattern.clone(),
+                                true,
+                                false,
+                            )
                         } else {
                             damaged_pattern[0] -= 1;
-                            count_arrangements_rec(current_arrangement, index + 1, &mut damaged_pattern.clone(), false, true)
+                            count_arrangements_rec(
+                                current_arrangement,
+                                index + 1,
+                                &mut damaged_pattern.clone(),
+                                false,
+                                true,
+                            )
                         }
                     }
                     // Unknown spring
                     '?' => {
-                        let mut new_arrangement_with_operational_spring = current_arrangement.clone();
-                        new_arrangement_with_operational_spring.replace_range(index..index+1, ".");
+                        let mut new_arrangement_with_operational_spring =
+                            current_arrangement.clone();
+                        new_arrangement_with_operational_spring
+                            .replace_range(index..index + 1, ".");
                         let mut new_arrangement_with_damaged_spring = current_arrangement.clone();
-                        new_arrangement_with_damaged_spring.replace_range(index..index+1, "#");
-                        count_arrangements_rec(new_arrangement_with_operational_spring, index, damaged_pattern, need_operational, need_damaged) +
-                        count_arrangements_rec(new_arrangement_with_damaged_spring, index, &mut damaged_pattern.clone(), need_operational, need_damaged)
+                        new_arrangement_with_damaged_spring.replace_range(index..index + 1, "#");
+                        count_arrangements_rec(
+                            new_arrangement_with_operational_spring,
+                            index,
+                            damaged_pattern,
+                            need_operational,
+                            need_damaged,
+                        ) + count_arrangements_rec(
+                            new_arrangement_with_damaged_spring,
+                            index,
+                            &mut damaged_pattern.clone(),
+                            need_operational,
+                            need_damaged,
+                        )
                     }
-                    _ => unreachable!()
+                    _ => unreachable!(),
                 }
             }
         }
@@ -83,9 +120,14 @@ impl Row {
         count_arrangements_rec(
             self.springs.clone(),
             0,
-            &mut self.damaged_pattern.split(',').map(|c| c.parse::<usize>().unwrap()).collect::<VecDeque<usize>>(),
+            &mut self
+                .damaged_pattern
+                .split(',')
+                .map(|c| c.parse::<usize>().unwrap())
+                .collect::<VecDeque<usize>>(),
             false,
-            false)
+            false,
+        )
     }
 }
 
@@ -94,7 +136,10 @@ fn part1(input: &mut impl BufRead) -> String {
 
     debug!("{:?}", rows);
 
-    rows.iter().map(|row| row.count_arrangements()).sum::<usize>().to_string()
+    rows.iter()
+        .map(|row| row.count_arrangements())
+        .sum::<usize>()
+        .to_string()
 }
 
 fn main() -> io::Result<()> {

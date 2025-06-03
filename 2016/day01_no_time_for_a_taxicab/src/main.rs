@@ -126,7 +126,8 @@ fn find_easter_bunny_hq(input: &mut impl BufRead, log_locations: bool) -> String
     };
 
     input.lines().take(1).for_each(|line| {
-        line.unwrap()
+        let _ = line
+            .unwrap()
             .split(", ")
             .map(Instruction::from)
             .try_for_each(|instruction| {

@@ -1,10 +1,11 @@
+use log::{debug, info};
 use ndarray::Array2;
-use nom::{bytes::complete::tag, character::complete::alphanumeric1};
 use nom::sequence::delimited;
-use log::{info, debug};
+use nom::{bytes::complete::tag, character::complete::alphanumeric1};
 use nom::{
-    character::complete::{self, multispace1, alpha1},
-    sequence::tuple,
+    character::complete::{self, alpha1, multispace1},
+    error::Error,
+    Parser,
 };
 use std::{
     fs::File,
@@ -27,14 +28,14 @@ struct DigInstruction {
 
 impl From<&str> for DigInstruction {
     fn from(input: &str) -> Self {
-        let (_, (direction, _, meters, _, _)) =
-            tuple::<_, _, nom::error::Error<_>, _>((
-                alpha1,
-                multispace1,
-                complete::u32,
-                multispace1,
-                delimited(tag("(#"), alphanumeric1, tag(")")),
-            ))(input)
+        let (_, (direction, _, meters, _, _)) = (
+            alpha1::<&str, Error<&str>>,
+            multispace1,
+            complete::u32,
+            multispace1,
+            delimited(tag("(#"), alphanumeric1, tag(")")),
+        )
+            .parse(input)
             .unwrap();
 
         DigInstruction {
@@ -43,7 +44,7 @@ impl From<&str> for DigInstruction {
                 "D" => Direction::Down,
                 "L" => Direction::Left,
                 "R" => Direction::Right,
-                _ => unreachable!()
+                _ => unreachable!(),
             },
             meters,
         }
@@ -61,7 +62,10 @@ fn parse_input(input: &mut impl BufRead) -> Vec<DigInstruction> {
         .collect()
 }
 
-fn fill((current_position_x, current_position_y): (usize, usize), dig_site: &mut Box<Array2<char>>) {
+fn fill(
+    (current_position_x, current_position_y): (usize, usize),
+    dig_site: &mut Box<Array2<char>>,
+) {
     let mut to_visit: Vec<(usize, usize)> = Vec::new();
 
     to_visit.push((current_position_x, current_position_y));
@@ -86,7 +90,9 @@ fn fill((current_position_x, current_position_y): (usize, usize), dig_site: &mut
 
 fn part1(input: &mut impl BufRead) -> String {
     let dig_instructions = parse_input(input);
-    let mut dig_site: Box<ndarray::prelude::ArrayBase<ndarray::OwnedRepr<char>, ndarray::prelude::Dim<[usize; 2]>>> = Box::new(Array2::from_elem((1000,1000), '.'));
+    let mut dig_site: Box<
+        ndarray::prelude::ArrayBase<ndarray::OwnedRepr<char>, ndarray::prelude::Dim<[usize; 2]>>,
+    > = Box::new(Array2::from_elem((1000, 1000), '.'));
 
     debug!("{:?}", dig_instructions);
 
@@ -98,46 +104,47 @@ fn part1(input: &mut impl BufRead) -> String {
 
     dig_instructions
         .iter()
-        .for_each(|instruction| {
-            match instruction.direction {
-                Direction::Up => {
-                    for i in current_position_x - instruction.meters as usize..=current_position_x {
-                        dig_site[(i, current_position_y)] = '#';
-                    }
-                    current_position_x -= instruction.meters as usize;
-                    max_x = max_x.max(current_position_x);
-                },
-                Direction::Down => {
-                    for i in current_position_x..=current_position_x + instruction.meters as usize {
-                        dig_site[(i, current_position_y)] = '#';
-                    }
-                    current_position_x += instruction.meters as usize;
-                    max_x = max_x.max(current_position_x);
-                },
-                Direction::Left => {
-                    for j in current_position_y - instruction.meters as usize..=current_position_y {
-                        dig_site[(current_position_x, j)] = '#';
-                    }
-                    current_position_y -= instruction.meters as usize;
-                    max_y = max_y.max(current_position_y);
-                },
-                Direction::Right => {
-                    for j in current_position_y..=current_position_y + instruction.meters as usize {
-                        dig_site[(current_position_x, j)] = '#';
-                    }
-                    current_position_y += instruction.meters as usize;
-                    max_y = max_y.max(current_position_y);
-                },
+        .for_each(|instruction| match instruction.direction {
+            Direction::Up => {
+                for i in current_position_x - instruction.meters as usize..=current_position_x {
+                    dig_site[(i, current_position_y)] = '#';
+                }
+                current_position_x -= instruction.meters as usize;
+                max_x = max_x.max(current_position_x);
+            }
+            Direction::Down => {
+                for i in current_position_x..=current_position_x + instruction.meters as usize {
+                    dig_site[(i, current_position_y)] = '#';
+                }
+                current_position_x += instruction.meters as usize;
+                max_x = max_x.max(current_position_x);
+            }
+            Direction::Left => {
+                for j in current_position_y - instruction.meters as usize..=current_position_y {
+                    dig_site[(current_position_x, j)] = '#';
+                }
+                current_position_y -= instruction.meters as usize;
+                max_y = max_y.max(current_position_y);
+            }
+            Direction::Right => {
+                for j in current_position_y..=current_position_y + instruction.meters as usize {
+                    dig_site[(current_position_x, j)] = '#';
+                }
+                current_position_y += instruction.meters as usize;
+                max_y = max_y.max(current_position_y);
             }
         });
 
     fill((0, 0), &mut dig_site);
 
-
     debug!("{} {}", max_x, max_y);
     debug!("{:?}", dig_site);
 
-    dig_site.iter().filter(|elem| **elem == '#' || **elem == '.').count().to_string()
+    dig_site
+        .iter()
+        .filter(|elem| **elem == '#' || **elem == '.')
+        .count()
+        .to_string()
 }
 
 fn main() -> io::Result<()> {

@@ -1,8 +1,9 @@
 use log::{debug, info};
 use ndarray::Array2;
 use std::{
+    collections::VecDeque,
     fs::File,
-    io::{self, BufRead, BufReader}, collections::VecDeque,
+    io::{self, BufRead, BufReader},
 };
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
@@ -38,8 +39,10 @@ fn parse_input(input: &mut impl BufRead) -> Array2<char> {
 }
 
 fn walk_x_steps(garden: &Array2<char>, number_of_steps: usize) -> usize {
-
-    let (start_position, _) = garden.indexed_iter().find(|(_, plot)| **plot == 'S').unwrap();
+    let (start_position, _) = garden
+        .indexed_iter()
+        .find(|(_, plot)| **plot == 'S')
+        .unwrap();
 
     let mut reached_garden_plots = 0;
 
@@ -50,18 +53,32 @@ fn walk_x_steps(garden: &Array2<char>, number_of_steps: usize) -> usize {
         if steps == number_of_steps {
             reached_garden_plots += 1;
         } else {
-            for direction in [Direction::North, Direction::South, Direction::East, Direction::West] {
+            for direction in [
+                Direction::North,
+                Direction::South,
+                Direction::East,
+                Direction::West,
+            ] {
                 let neighbour_node_x = plot_x as isize + direction.get_offset().0;
                 let neighbour_node_y = plot_y as isize + direction.get_offset().1;
-                if neighbour_node_x < 0 || neighbour_node_x >= garden.dim().0 as isize ||
-                   neighbour_node_y < 0 || neighbour_node_y >= garden.dim().1 as isize {
+                if neighbour_node_x < 0
+                    || neighbour_node_x >= garden.dim().0 as isize
+                    || neighbour_node_y < 0
+                    || neighbour_node_y >= garden.dim().1 as isize
+                {
                     continue;
                 }
 
-                if garden[(neighbour_node_x as usize, neighbour_node_y as usize)] != '#' &&
-                   !plots.contains(&((neighbour_node_x as usize, neighbour_node_y as usize), steps + 1))
+                if garden[(neighbour_node_x as usize, neighbour_node_y as usize)] != '#'
+                    && !plots.contains(&(
+                        (neighbour_node_x as usize, neighbour_node_y as usize),
+                        steps + 1,
+                    ))
                 {
-                    plots.push_front(((neighbour_node_x as usize, neighbour_node_y as usize), steps + 1));
+                    plots.push_front((
+                        (neighbour_node_x as usize, neighbour_node_y as usize),
+                        steps + 1,
+                    ));
                 }
             }
         }

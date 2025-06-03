@@ -1,6 +1,7 @@
 use log::{debug, info};
+use nom::Parser;
 #[cfg(not(test))]
-use rand::{distributions::Alphanumeric, Rng};
+use rand::{distr::Alphanumeric, Rng};
 use std::{
     collections::HashMap,
     fs::File,
@@ -21,7 +22,7 @@ impl From<&str> for Wire {
         fn generate_random_string() -> String {
             #[cfg(not(test))]
             {
-                rand::thread_rng()
+                rand::rng()
                     .sample_iter(&Alphanumeric)
                     .take(10)
                     .map(char::from)
@@ -99,7 +100,7 @@ impl From<&str> for Gate {
             branch::alt,
             bytes::complete::tag,
             character::complete,
-            sequence::{preceded, separated_pair, tuple},
+            sequence::{preceded, separated_pair},
             IResult,
         };
 
@@ -110,7 +111,8 @@ impl From<&str> for Gate {
                 alt((complete::digit1, complete::alpha1)),
                 tag(" -> "),
                 complete::alpha1,
-            )(input)
+            )
+            .parse(input)
             .map(|(s, (wire_in, wire_out))| {
                 (
                     s,
@@ -124,14 +126,15 @@ impl From<&str> for Gate {
 
         fn and_or_shift(input: &str) -> IResult<&str, Gate> {
             separated_pair(
-                tuple((
+                (
                     alt((complete::digit1, complete::alpha1)),
                     alt((tag(" AND "), tag(" OR "), tag(" LSHIFT "), tag(" RSHIFT "))),
                     alt((complete::digit1, complete::alpha1)),
-                )),
+                ),
                 tag(" -> "),
                 complete::alpha1,
-            )(input)
+            )
+            .parse(input)
             .map(|(s, ((wire_in_1, op, wire_in_2), wire_out))| {
                 (
                     s,
@@ -167,7 +170,8 @@ impl From<&str> for Gate {
                 preceded(tag("NOT "), complete::alpha1),
                 tag(" -> "),
                 complete::alpha1,
-            )(input)
+            )
+            .parse(input)
             .map(|(s, (wire_in, wire_out))| {
                 (
                     s,
@@ -179,7 +183,10 @@ impl From<&str> for Gate {
             })
         }
 
-        alt((pass_through, and_or_shift, not))(input).unwrap().1
+        alt((pass_through, and_or_shift, not))
+            .parse(input)
+            .unwrap()
+            .1
     }
 }
 

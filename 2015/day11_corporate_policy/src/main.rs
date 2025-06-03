@@ -11,7 +11,7 @@ struct Password([char; 8]);
 impl Password {
     fn inc(&mut self) {
         let Password(password) = self;
-        password.iter_mut().rev().try_for_each(|c| {
+        let _ = password.iter_mut().rev().try_for_each(|c| {
             if *c == 'z' {
                 *c = 'a';
                 ControlFlow::Continue(())

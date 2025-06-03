@@ -4,7 +4,7 @@
 
 use itertools::iproduct;
 use log::{debug, info};
-use nom::{bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use regex::Regex;
 use std::{
     collections::{HashMap, HashSet, VecDeque},
@@ -25,6 +25,10 @@ fn parse_input(input: &mut impl BufRead) -> (Vec<Rule>, String) {
     // results. But this is aoc and the input files aren't that large to begin
     // with.
 
+    fn parse_rule(input: &str) -> IResult<&str, (&str, &str, &str), Error<&str>> {
+        (complete::alpha1, tag(" => "), complete::alpha1).parse(input)
+    }
+
     // So start by reading the entire file in memory and put the lines in a
     // double ended queue.
     let lines = input
@@ -41,12 +45,7 @@ fn parse_input(input: &mut impl BufRead) -> (Vec<Rule>, String) {
         .rev()
         .skip(2)
         .map(|line| {
-            let (_, (from, _, to)) = tuple::<_, _, nom::error::Error<_>, _>((
-                complete::alpha1,
-                tag(" => "),
-                complete::alpha1,
-            ))(line.as_str())
-            .unwrap();
+            let (_, (from, _, to)) = parse_rule(line.as_str()).unwrap();
 
             Rule {
                 from: from.to_string(),

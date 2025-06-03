@@ -1,6 +1,6 @@
 use generator::{done, Gn};
 use log::{debug, info};
-use nom::{bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Seek},
@@ -48,26 +48,43 @@ struct Ingredient {
 }
 
 fn parse_input(input: &mut impl BufRead) -> Vec<Ingredient> {
+    type InputLine<'a> = (
+        &'a str,
+        &'a str,
+        i32,
+        &'a str,
+        i32,
+        &'a str,
+        i32,
+        &'a str,
+        i32,
+        &'a str,
+        i32,
+    );
+    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        (
+            complete::alpha1,
+            tag(": capacity "),
+            complete::i32,
+            tag(", durability "),
+            complete::i32,
+            tag(", flavor "),
+            complete::i32,
+            tag(", texture "),
+            complete::i32,
+            tag(", calories "),
+            complete::i32,
+        )
+            .parse(input)
+    }
+
     input
         .lines()
         .map(|line| {
             let line = line.unwrap();
 
             let (_, (_, _, capacity, _, durability, _, flavor, _, texture, _, calories)) =
-                tuple::<_, _, nom::error::Error<_>, _>((
-                    complete::alpha1,
-                    tag(": capacity "),
-                    complete::i32,
-                    tag(", durability "),
-                    complete::i32,
-                    tag(", flavor "),
-                    complete::i32,
-                    tag(", texture "),
-                    complete::i32,
-                    tag(", calories "),
-                    complete::i32,
-                ))(line.as_str())
-                .unwrap();
+                parse_line(line.as_str()).unwrap();
 
             Ingredient {
                 capacity,
@@ -134,10 +151,10 @@ fn calculate_score_and_calories(ingredients: &[Ingredient], amounts: &[i32]) -> 
                 acc.4 + score.4,
             )
         });
-        // ingredients.zip(amounts).map.fold:
-        // [
-        //  (68, 80, 152, 76, 520)
-        // ]
+    // ingredients.zip(amounts).map.fold:
+    // [
+    //  (68, 80, 152, 76, 520)
+    // ]
 
     capacity = capacity.clamp(0, i32::MAX);
     durability = durability.clamp(0, i32::MAX);

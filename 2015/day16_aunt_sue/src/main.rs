@@ -3,8 +3,8 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete,
-    sequence::{pair, terminated, tuple},
-    IResult,
+    sequence::{pair, terminated},
+    IResult, Parser,
 };
 use std::{
     collections::HashMap,
@@ -37,20 +37,21 @@ impl From<&str> for Aunt {
                     terminated(tag("perfumes"), tag(": ")),
                 )),
                 complete::u32,
-            )(input)
+            )
+            .parse(input)
         }
 
-        let (_, (_, id, _, property1, _, property2, _, property3)) =
-            tuple::<_, _, nom::error::Error<_>, _>((
-                tag("Sue "),
-                complete::u32,
-                tag(": "),
-                property_parser,
-                tag(", "),
-                property_parser,
-                tag(", "),
-                property_parser,
-            ))(value)
+        let (_, (_, id, _, property1, _, property2, _, property3)) = (
+            tag("Sue "),
+            complete::u32,
+            tag(": "),
+            property_parser,
+            tag(", "),
+            property_parser,
+            tag(", "),
+            property_parser,
+        )
+            .parse(value)
             .unwrap();
 
         [property1, property2, property3]
@@ -71,7 +72,7 @@ impl PartialEq for Aunt {
                 other
                     .properties
                     .get(property)
-                    .map_or(false, |&other_amount| other_amount == *amount)
+                    .is_some_and(|&other_amount| other_amount == *amount)
             })
         } else {
             other
@@ -80,7 +81,7 @@ impl PartialEq for Aunt {
                 .all(|(other_property, other_amount)| {
                     self.properties
                         .get(other_property)
-                        .map_or(false, |&amount| amount == *other_amount)
+                        .is_some_and(|&amount| amount == *other_amount)
                 })
         }
     }
@@ -133,15 +134,15 @@ fn part2(input: &mut impl BufRead) -> String {
                     "cats" | "trees" => aunt2
                         .properties
                         .get(aunt1_property)
-                        .map_or(false, |&aunt2_amount| aunt2_amount < *aunt1_amount),
+                        .is_some_and(|&aunt2_amount| aunt2_amount < *aunt1_amount),
                     "pomeranians" | "goldfish" => aunt2
                         .properties
                         .get(aunt1_property)
-                        .map_or(false, |&aunt2_amount| aunt2_amount > *aunt1_amount),
+                        .is_some_and(|&aunt2_amount| aunt2_amount > *aunt1_amount),
                     _ => aunt2
                         .properties
                         .get(aunt1_property)
-                        .map_or(false, |&aunt2_amount| aunt2_amount == *aunt1_amount),
+                        .is_some_and(|&aunt2_amount| aunt2_amount == *aunt1_amount),
                 },
             )
     })

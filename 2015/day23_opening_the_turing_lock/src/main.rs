@@ -3,8 +3,8 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete,
-    sequence::{pair, terminated, tuple},
-    IResult,
+    sequence::{pair, terminated},
+    IResult, Parser,
 };
 use std::{
     fs::File,
@@ -105,7 +105,8 @@ impl From<&str> for Instruction {
             pair(
                 alt((tag("hlf "), tag("tpl "), tag("inc "))),
                 complete::one_of("ab"),
-            )(input)
+            )
+            .parse(input)
             .map(|(s, (instr, reg))| {
                 (
                     s,
@@ -120,40 +121,44 @@ impl From<&str> for Instruction {
         }
 
         fn jie_jio_instruction(input: &str) -> IResult<&str, Instruction> {
-            tuple((
+            (
                 alt((tag("jio "), tag("jie "))),
                 terminated(complete::one_of("ab"), tag(", ")),
                 complete::i64,
-            ))(input)
-            .map(|(s, (instr, reg, offset))| {
-                (
-                    s,
-                    match instr {
-                        "jio " => Instruction::Jio(reg.into(), offset),
-                        "jie " => Instruction::Jie(reg.into(), offset),
-                        _ => unreachable!(),
-                    },
-                )
-            })
+            )
+                .parse(input)
+                .map(|(s, (instr, reg, offset))| {
+                    (
+                        s,
+                        match instr {
+                            "jio " => Instruction::Jio(reg.into(), offset),
+                            "jie " => Instruction::Jie(reg.into(), offset),
+                            _ => unreachable!(),
+                        },
+                    )
+                })
         }
 
         fn jmp_instruction(input: &str) -> IResult<&str, Instruction> {
-            pair(tag("jmp "), complete::i64)(input).map(|(s, (instr, offset))| {
-                (
-                    s,
-                    match instr {
-                        "jmp " => Instruction::Jmp(offset),
-                        _ => unreachable!(),
-                    },
-                )
-            })
+            pair(tag("jmp "), complete::i64)
+                .parse(input)
+                .map(|(s, (instr, offset))| {
+                    (
+                        s,
+                        match instr {
+                            "jmp " => Instruction::Jmp(offset),
+                            _ => unreachable!(),
+                        },
+                    )
+                })
         }
 
         alt((
             hlf_tpl_inc_instruction,
             jie_jio_instruction,
             jmp_instruction,
-        ))(input)
+        ))
+        .parse(input)
         .unwrap()
         .1
     }

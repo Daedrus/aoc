@@ -1,10 +1,11 @@
-use log::{info, debug};
+use log::{debug, info};
 use nom::{
     bytes::complete::tag,
-    character::complete::{self, newline, alphanumeric1},
+    character::complete::{self, alphanumeric1, newline},
+    error::Error,
     multi::separated_list1,
-    sequence::{tuple, terminated},
-    IResult,
+    sequence::terminated,
+    IResult, Parser,
 };
 use std::{
     fs::File,
@@ -23,60 +24,63 @@ struct Range {
 type Map = Vec<Range>;
 
 fn parse_input(input: &mut impl BufRead, seed_line: bool) -> (Vec<Seed>, Vec<Map>) {
-
     fn range_parser(input: &str) -> IResult<&str, Range> {
-        tuple((
+        (
             terminated(complete::u64, tag(" ")),
             terminated(complete::u64, tag(" ")),
             complete::u64,
-        ))(input).map(|(s, (destination_range_start, source_range_start, range_length))| {
-                (
-                    s,
-                    Range { destination_range_start, source_range_start, range_length }
-                )
-            })
+        )
+            .parse(input)
+            .map(
+                |(s, (destination_range_start, source_range_start, range_length))| {
+                    (
+                        s,
+                        Range {
+                            destination_range_start,
+                            source_range_start,
+                            range_length,
+                        },
+                    )
+                },
+            )
     }
 
     fn map_parser(input: &str) -> IResult<&str, Map> {
-        tuple((
+        (
             terminated(
-                tuple((
-                    alphanumeric1,
-                    tag("-to-"),
-                    alphanumeric1,
-                    tag(" map"),
-                )), tag(":")),
+                (alphanumeric1, tag("-to-"), alphanumeric1, tag(" map")),
+                tag(":"),
+            ),
             newline,
             separated_list1(newline, range_parser),
             newline,
-        ))(input).map(|(s, (_, _, ranges, _))| {
-                (
-                    s,
-                    ranges
-                )
-            })
+        )
+            .parse(input)
+            .map(|(s, (_, _, ranges, _))| (s, ranges))
     }
 
     let mut lines: String = Default::default();
     input.read_to_string(&mut lines).unwrap();
 
-    let (lines, (_, mut seeds, _, _)) = tuple::<_, _, nom::error::Error<_>, _>((
-        tag("seeds: "),
+    let (lines, (_, mut seeds, _, _)) = (
+        tag::<&str, &str, Error<&str>>("seeds: "),
         separated_list1(tag(" "), complete::u64),
         newline,
         newline,
-    ))(lines.as_str()).unwrap();
+    )
+        .parse(lines.as_str())
+        .unwrap();
 
     if !seed_line {
-        let mut range1: Vec<u64> = (seeds[0]..seeds[0]+seeds[1]).collect();
-        let mut range2: Vec<u64> = (seeds[2]..seeds[2]+seeds[3]).collect();
+        let mut range1: Vec<u64> = (seeds[0]..seeds[0] + seeds[1]).collect();
+        let mut range2: Vec<u64> = (seeds[2]..seeds[2] + seeds[3]).collect();
 
         range1.append(&mut range2);
 
         seeds = range1;
     }
 
-    let (_, maps) = separated_list1(newline, map_parser)(lines).unwrap();
+    let (_, maps) = separated_list1(newline, map_parser).parse(lines).unwrap();
 
     (seeds, maps)
 }
@@ -95,21 +99,22 @@ fn part1(input: &mut impl BufRead) -> String {
         .map(|seed| {
             let mut location: u64 = *seed;
 
-            maps
-                .iter()
-                .for_each(|map| {
-                    if let Some(range) = map
-                        .iter()
-                        .find(|range| location >= range.source_range_start &&
-                                      location < range.source_range_start + range.range_length) {
-                                location = range.destination_range_start + (location - range.source_range_start);
-                    }
-                });
+            maps.iter().for_each(|map| {
+                if let Some(range) = map.iter().find(|range| {
+                    location >= range.source_range_start
+                        && location < range.source_range_start + range.range_length
+                }) {
+                    location =
+                        range.destination_range_start + (location - range.source_range_start);
+                }
+            });
 
             debug!("FINAL {}, {}", seed, location);
             location
         })
-        .min().unwrap().to_string()
+        .min()
+        .unwrap()
+        .to_string()
 }
 
 fn main() -> io::Result<()> {

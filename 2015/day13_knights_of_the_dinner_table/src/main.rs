@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use log::{debug, info};
-use nom::{branch::alt, bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{branch::alt, bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use std::{
     collections::{HashMap, HashSet},
     fs::File,
@@ -11,19 +11,24 @@ fn parse_input(input: &mut impl BufRead) -> (HashSet<String>, HashMap<(String, S
     let mut people: HashSet<String> = HashSet::new();
     let mut happiness_changes: HashMap<(String, String), i32> = HashMap::new();
 
+    type InputLine<'a> = (&'a str, &'a str, i32, &'a str, &'a str, char);
+    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        (
+            complete::alpha1,
+            alt((tag(" would gain "), tag(" would lose "))),
+            complete::i32,
+            tag(" happiness units by sitting next to "),
+            complete::alpha1,
+            complete::char('.'),
+        )
+            .parse(input)
+    }
+
     input.lines().for_each(|line| {
         let line = line.unwrap();
 
         let (_, (person1, gain_or_lose, happiness_amount, _, person2, _)) =
-            tuple::<_, _, nom::error::Error<_>, _>((
-                complete::alpha1,
-                alt((tag(" would gain "), tag(" would lose "))),
-                complete::i32,
-                tag(" happiness units by sitting next to "),
-                complete::alpha1,
-                complete::char('.'),
-            ))(line.as_str())
-            .unwrap();
+            parse_line(line.as_str()).unwrap();
 
         people.insert(person1.to_string());
         people.insert(person2.to_string());

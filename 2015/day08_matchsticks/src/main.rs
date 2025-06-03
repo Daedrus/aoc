@@ -21,7 +21,7 @@ struct StringFragment {
 }
 
 fn ascii_code(input: &str) -> IResult<&str, &str> {
-    preceded(tag("\\x"), take(2usize))(input)
+    preceded(tag("\\x"), take(2usize)).parse(input)
 }
 
 fn parse_string(input: &str) -> IResult<&str, Vec<StringFragment>> {
@@ -50,7 +50,8 @@ fn parse_string(input: &str) -> IResult<&str, Vec<StringFragment>> {
             }),
         ))),
         terminated(tag("\""), eof),
-    )(input)
+    )
+    .parse(input)
     .map(|(s, mut v)| {
         // Manually add the beginning and end double quotes
         v.push(StringFragment {

@@ -2,8 +2,9 @@ use log::{debug, info};
 use nom::{
     bytes::complete::tag,
     character::complete::{self, newline, space1},
+    error::Error,
     multi::separated_list1,
-    sequence::tuple,
+    IResult, Parser,
 };
 use std::{
     fs::File,
@@ -14,16 +15,21 @@ fn parse_input(input: &mut impl BufRead) -> (Vec<u64>, Vec<u64>) {
     let mut lines: String = Default::default();
     input.read_to_string(&mut lines).unwrap();
 
-    let (_, (_, _, times, _, _, _, distances)) = tuple::<_, _, nom::error::Error<_>, _>((
-        tag("Time:"),
-        space1,
-        separated_list1(space1, complete::u64),
-        newline,
-        tag("Distance:"),
-        space1,
-        separated_list1(space1, complete::u64),
-    ))(lines.as_str())
-    .unwrap();
+    type InputLine<'a> = (&'a str, &'a str, Vec<u64>, char, &'a str, &'a str, Vec<u64>);
+    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        (
+            tag("Time:"),
+            space1,
+            separated_list1(space1, complete::u64),
+            newline,
+            tag("Distance:"),
+            space1,
+            separated_list1(space1, complete::u64),
+        )
+            .parse(input)
+    }
+
+    let (_, (_, _, times, _, _, _, distances)) = parse_line(lines.as_str()).unwrap();
 
     (times, distances)
 }

@@ -1,6 +1,6 @@
 use itertools::{iproduct, Itertools};
 use log::info;
-use nom::{bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Seek},
@@ -39,29 +39,105 @@ struct Shop {
 // or one ring)
 const SHOP: Shop = Shop {
     weapons: [
-        Item { cost:   8, damage: 4, armor: 0, },
-        Item { cost:  10, damage: 5, armor: 0, },
-        Item { cost:  25, damage: 6, armor: 0, },
-        Item { cost:  40, damage: 7, armor: 0, },
-        Item { cost:  74, damage: 8, armor: 0, },
+        Item {
+            cost: 8,
+            damage: 4,
+            armor: 0,
+        },
+        Item {
+            cost: 10,
+            damage: 5,
+            armor: 0,
+        },
+        Item {
+            cost: 25,
+            damage: 6,
+            armor: 0,
+        },
+        Item {
+            cost: 40,
+            damage: 7,
+            armor: 0,
+        },
+        Item {
+            cost: 74,
+            damage: 8,
+            armor: 0,
+        },
     ],
     armor: [
-        Item { cost:   0, damage: 0, armor: 0, },
-        Item { cost:  13, damage: 0, armor: 1, },
-        Item { cost:  31, damage: 0, armor: 2, },
-        Item { cost:  53, damage: 0, armor: 3, },
-        Item { cost:  75, damage: 0, armor: 4, },
-        Item { cost: 102, damage: 0, armor: 5, },
+        Item {
+            cost: 0,
+            damage: 0,
+            armor: 0,
+        },
+        Item {
+            cost: 13,
+            damage: 0,
+            armor: 1,
+        },
+        Item {
+            cost: 31,
+            damage: 0,
+            armor: 2,
+        },
+        Item {
+            cost: 53,
+            damage: 0,
+            armor: 3,
+        },
+        Item {
+            cost: 75,
+            damage: 0,
+            armor: 4,
+        },
+        Item {
+            cost: 102,
+            damage: 0,
+            armor: 5,
+        },
     ],
     rings: [
-        Item { cost:   0, damage: 0, armor: 0, },
-        Item { cost:   0, damage: 0, armor: 0, },
-        Item { cost:  25, damage: 1, armor: 0, },
-        Item { cost:  50, damage: 2, armor: 0, },
-        Item { cost: 100, damage: 3, armor: 0, },
-        Item { cost:  20, damage: 0, armor: 1, },
-        Item { cost:  40, damage: 0, armor: 2, },
-        Item { cost:  80, damage: 0, armor: 3, },
+        Item {
+            cost: 0,
+            damage: 0,
+            armor: 0,
+        },
+        Item {
+            cost: 0,
+            damage: 0,
+            armor: 0,
+        },
+        Item {
+            cost: 25,
+            damage: 1,
+            armor: 0,
+        },
+        Item {
+            cost: 50,
+            damage: 2,
+            armor: 0,
+        },
+        Item {
+            cost: 100,
+            damage: 3,
+            armor: 0,
+        },
+        Item {
+            cost: 20,
+            damage: 0,
+            armor: 1,
+        },
+        Item {
+            cost: 40,
+            damage: 0,
+            armor: 2,
+        },
+        Item {
+            cost: 80,
+            damage: 0,
+            armor: 3,
+        },
     ],
 };
 
@@ -79,21 +155,26 @@ impl Unit {
 }
 
 fn parse_input(input: &mut impl BufRead) -> Unit {
+    type InputLine<'a> = (&'a str, i32, &'a str, i32, &'a str, i32);
+    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        (
+            tag("Hit Points: "),
+            complete::i32,
+            tag("Damage: "),
+            complete::i32,
+            tag("Armor: "),
+            complete::i32,
+        )
+            .parse(input)
+    }
+
     let boss_stats = input
         .lines()
         .take(3)
         .map(|line| line.unwrap())
         .collect::<String>();
 
-    let (_, (_, hp, _, damage, _, armor)) = tuple::<_, _, nom::error::Error<_>, _>((
-        tag("Hit Points: "),
-        complete::i32,
-        tag("Damage: "),
-        complete::i32,
-        tag("Armor: "),
-        complete::i32,
-    ))(boss_stats.as_str())
-    .unwrap();
+    let (_, (_, hp, _, damage, _, armor)) = parse_line(boss_stats.as_str()).unwrap();
 
     Unit { hp, damage, armor }
 }

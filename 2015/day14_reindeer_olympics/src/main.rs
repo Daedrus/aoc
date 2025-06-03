@@ -1,5 +1,5 @@
 use log::info;
-use nom::{bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader, Seek},
@@ -15,23 +15,28 @@ struct Reindeer {
 }
 
 fn parse_input(input: &mut impl BufRead) -> Vec<Reindeer> {
+    type InputLine<'a> = (&'a str, &'a str, u32, &'a str, u32, &'a str, u32, &'a str);
+    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        (
+            complete::alpha1,
+            tag(" can fly "),
+            complete::u32,
+            tag(" km/s for "),
+            complete::u32,
+            tag(" seconds, but then must rest for "),
+            complete::u32,
+            tag(" seconds."),
+        )
+            .parse(input)
+    }
+
     input
         .lines()
         .map(|line| {
             let line = line.unwrap();
 
             let (_, (_, _, speed, _, flight_duration, _, rest_duration, _)) =
-                tuple::<_, _, nom::error::Error<_>, _>((
-                    complete::alpha1,
-                    tag(" can fly "),
-                    complete::u32,
-                    tag(" km/s for "),
-                    complete::u32,
-                    tag(" seconds, but then must rest for "),
-                    complete::u32,
-                    tag(" seconds."),
-                ))(line.as_str())
-                .unwrap();
+                parse_line(line.as_str()).unwrap();
 
             Reindeer {
                 speed,

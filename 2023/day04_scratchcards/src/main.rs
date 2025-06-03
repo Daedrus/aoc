@@ -2,8 +2,9 @@ use log::{debug, info};
 use nom::{
     bytes::complete::tag,
     character::complete::{self, multispace1},
+    error::Error,
     multi::separated_list1,
-    sequence::tuple,
+    IResult, Parser,
 };
 use std::{
     collections::HashSet,
@@ -20,8 +21,20 @@ struct Scratchcard {
 
 impl From<&str> for Scratchcard {
     fn from(input: &str) -> Self {
-        let (_, (_, _, index, _, _, numbers_you_have, _, _, _, winning_numbers)) =
-            tuple::<_, _, nom::error::Error<_>, _>((
+        type InputLine<'a> = (
+            &'a str,
+            &'a str,
+            u32,
+            &'a str,
+            &'a str,
+            Vec<u32>,
+            &'a str,
+            &'a str,
+            &'a str,
+            Vec<u32>,
+        );
+        fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+            (
                 tag("Card"),
                 multispace1,
                 complete::u32,
@@ -32,8 +45,12 @@ impl From<&str> for Scratchcard {
                 tag("|"),
                 multispace1,
                 separated_list1(multispace1, complete::u32),
-            ))(input)
-            .unwrap();
+            )
+                .parse(input)
+        }
+
+        let (_, (_, _, index, _, _, numbers_you_have, _, _, _, winning_numbers)) =
+            parse_line(input).unwrap();
 
         Scratchcard {
             // Have the index start from 0 to simplify some calculations below

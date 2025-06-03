@@ -1,25 +1,30 @@
 use log::info;
-use nom::{bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use std::{
     fs::File,
     io::{self, BufRead, BufReader},
 };
 
 fn parse_input(input: &mut impl BufRead) -> (u64, u64) {
+    type InputLine<'a> = (&'a str, u64, &'a str, u64, &'a str);
+    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        (
+            tag("To continue, please consult the code grid in the manual.  Enter the code at row "),
+            complete::u64,
+            tag(", column "),
+            complete::u64,
+            tag("."),
+        )
+            .parse(input)
+    }
+
     let row_column_line = input
         .lines()
         .take(1)
         .map(|line| line.unwrap())
         .collect::<String>();
 
-    let (_, (_, row, _, column, _)) = tuple::<_, _, nom::error::Error<_>, _>((
-        tag("To continue, please consult the code grid in the manual.  Enter the code at row "),
-        complete::u64,
-        tag(", column "),
-        complete::u64,
-        tag("."),
-    ))(row_column_line.as_str())
-    .unwrap();
+    let (_, (_, row, _, column, _)) = parse_line(row_column_line.as_str()).unwrap();
 
     (row, column)
 }

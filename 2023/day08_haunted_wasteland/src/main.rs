@@ -1,9 +1,10 @@
 use log::{debug, info};
 use nom::bytes::complete::tag;
 use nom::character::complete::{alphanumeric1, newline};
+use nom::error::Error;
 use nom::multi::separated_list1;
-use nom::sequence::tuple;
 use nom::IResult;
+use nom::Parser;
 use num::integer::lcm;
 use std::{
     collections::HashMap,
@@ -21,38 +22,39 @@ type Network = HashMap<String, (String, String)>;
 
 fn parse_input(input: &mut impl BufRead) -> (Vec<Instruction>, Network) {
     fn node_parser(input: &str) -> IResult<&str, (&str, &str, &str)> {
-        tuple((
+        (
             alphanumeric1,
             tag(" = ("),
             alphanumeric1,
             tag(", "),
             alphanumeric1,
             tag(")"),
-        ))(input)
-        .map(|(s, (node, _, node_l, _, node_r, _))| (s, (node, node_l, node_r)))
+        )
+            .parse(input)
+            .map(|(s, (node, _, node_l, _, node_r, _))| (s, (node, node_l, node_r)))
     }
 
     let mut lines: String = Default::default();
     input.read_to_string(&mut lines).unwrap();
 
-    let (lines, instructions) =
-        tuple::<_, _, nom::error::Error<_>, _>((alphanumeric1, newline, newline))(lines.as_str())
-            .map(|(s, (instructions, _, _))| {
-                (
-                    s,
-                    instructions
-                        .chars()
-                        .map(|c| match c {
-                            'L' => Instruction::Left,
-                            'R' => Instruction::Right,
-                            _ => unreachable!(),
-                        })
-                        .collect::<Vec<Instruction>>(),
-                )
-            })
-            .unwrap();
+    let (lines, instructions) = (alphanumeric1::<&str, Error<&str>>, newline, newline)
+        .parse(lines.as_str())
+        .map(|(s, (instructions, _, _))| {
+            (
+                s,
+                instructions
+                    .chars()
+                    .map(|c| match c {
+                        'L' => Instruction::Left,
+                        'R' => Instruction::Right,
+                        _ => unreachable!(),
+                    })
+                    .collect::<Vec<Instruction>>(),
+            )
+        })
+        .unwrap();
 
-    let (_, node_mappings) = separated_list1(newline, node_parser)(lines).unwrap();
+    let (_, node_mappings) = separated_list1(newline, node_parser).parse(lines).unwrap();
 
     let mut network: Network = HashMap::new();
     node_mappings.iter().for_each(|(node, node_l, node_r)| {

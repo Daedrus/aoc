@@ -31,10 +31,7 @@ fn sum_all_numbers(node: &Value, is_bad_value: fn(&Value) -> bool) -> i64 {
 fn part1(input: &mut impl BufRead) -> String {
     let json_tree: Value = serde_json::from_reader(input).expect("Could not parse JSON file");
 
-    sum_all_numbers(
-        &json_tree,
-        |_| false
-    ).to_string()
+    sum_all_numbers(&json_tree, |_| false).to_string()
 }
 
 fn part2(input: &mut impl BufRead) -> String {
@@ -43,7 +40,8 @@ fn part2(input: &mut impl BufRead) -> String {
     sum_all_numbers(
         &json_tree,
         |value| matches!(value, Value::String(s) if s.eq("red")),
-    ).to_string()
+    )
+    .to_string()
 }
 
 fn main() -> io::Result<()> {
@@ -86,10 +84,7 @@ mod tests {
 
     #[test]
     fn part2_tests() {
-        assert_eq!(
-            part2(&mut Cursor::new("[1,2,3]")),
-            "6"
-        );
+        assert_eq!(part2(&mut Cursor::new("[1,2,3]")), "6");
         assert_eq!(
             part2(&mut Cursor::new("[1,{\"c\":\"red\",\"b\":2},3]")),
             "4"
@@ -98,10 +93,7 @@ mod tests {
             part2(&mut Cursor::new("{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}")),
             "0"
         );
-        assert_eq!(
-            part2(&mut Cursor::new("[1,\"red\",5]")),
-            "6"
-        );
+        assert_eq!(part2(&mut Cursor::new("[1,\"red\",5]")), "6");
 
         init();
     }

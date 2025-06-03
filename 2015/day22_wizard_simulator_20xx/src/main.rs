@@ -1,5 +1,5 @@
 use log::info;
-use nom::{bytes::complete::tag, character::complete, sequence::tuple};
+use nom::{bytes::complete::tag, character::complete, error::Error, IResult, Parser};
 use std::{
     collections::{HashMap, VecDeque},
     fs::File,
@@ -21,13 +21,17 @@ struct Boss {
 
 impl From<&str> for Boss {
     fn from(input: &str) -> Self {
-        let (_, (_, hp, _, damage)) = tuple::<_, _, nom::error::Error<_>, _>((
-            tag("Hit Points: "),
-            complete::i32,
-            tag("Damage: "),
-            complete::i32,
-        ))(input)
-        .unwrap();
+        fn parse_line(input: &str) -> IResult<&str, (&str, i32, &str, i32), Error<&str>> {
+            (
+                tag("Hit Points: "),
+                complete::i32,
+                tag("Damage: "),
+                complete::i32,
+            )
+                .parse(input)
+        }
+
+        let (_, (_, hp, _, damage)) = parse_line(input).unwrap();
 
         Boss { hp, damage }
     }
@@ -94,9 +98,7 @@ struct Spell {
 impl Spell {
     fn can_be_cast(&self, state: &State) -> bool {
         match self.spell_type {
-            SpellType::MagicMissile | SpellType::Drain => {
-                state.player.mana >= self.cost
-            }
+            SpellType::MagicMissile | SpellType::Drain => state.player.mana >= self.cost,
             SpellType::Shield => {
                 state.player.mana >= self.cost && !state.effects.contains_key(&Effect::Shield)
             }

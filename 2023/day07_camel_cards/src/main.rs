@@ -2,7 +2,8 @@ use log::{debug, info};
 use nom::{
     bytes::complete::tag,
     character::complete::{self, alphanumeric1},
-    sequence::tuple,
+    error::Error,
+    Parser,
 };
 use std::{cmp::Ordering, collections::HashMap};
 use std::{
@@ -112,9 +113,9 @@ impl PartialOrd for Hand {
 
 impl From<(&str, bool)> for Hand {
     fn from((input, j_is_joker): (&str, bool)) -> Self {
-        let (_, (card_str, _, bid)) =
-            tuple::<_, _, nom::error::Error<_>, _>((alphanumeric1, tag(" "), complete::u32))(input)
-                .unwrap();
+        let (_, (card_str, _, bid)) = (alphanumeric1::<&str, Error<&str>>, tag(" "), complete::u32)
+            .parse(input)
+            .unwrap();
 
         // Convert the input string to our Card enum
         let cards: Vec<Card> = card_str.chars().map(|c| (c, j_is_joker).into()).collect();

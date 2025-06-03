@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use log::{debug, info};
-use nom::{bytes::complete::tag, character::complete, sequence::separated_pair};
+use nom::{bytes::complete::tag, character::complete, sequence::separated_pair, Parser};
 use std::{
     collections::{HashMap, HashSet},
     fs::File,
@@ -30,7 +30,8 @@ fn parse_input(input: &mut impl BufRead) -> (HashSet<String>, HashMap<(String, S
             ),
             tag(" = "),
             complete::u32,
-        )(line.as_str());
+        )
+        .parse(line.as_str());
 
         let (_, ((location1, location2), distance)) = parser.unwrap();
 

@@ -51,11 +51,14 @@ impl TryFrom<&str> for Step {
 
 impl Display for Operation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}",
+        write!(
+            f,
+            "{}",
             match self {
                 Operation::Dash => "-".to_string(),
                 Operation::Equals(focal_length) => format!("={}", focal_length),
-            })
+            }
+        )
     }
 }
 
