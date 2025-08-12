@@ -61,7 +61,7 @@ fn parse_input(input: &mut impl BufRead) -> Vec<Ingredient> {
         &'a str,
         i32,
     );
-    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+    fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
         (
             complete::alpha1,
             tag(": capacity "),

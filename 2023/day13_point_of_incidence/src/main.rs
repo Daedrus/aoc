@@ -97,7 +97,7 @@ fn get_array_view(
     mirror_array: &Array2<char>,
     index: usize,
     reflection_type: ReflectionType,
-) -> ArrayView1<char> {
+) -> ArrayView1<'_, char> {
     match reflection_type {
         ReflectionType::Row => mirror_array.row(index),
         ReflectionType::Column => mirror_array.column(index),

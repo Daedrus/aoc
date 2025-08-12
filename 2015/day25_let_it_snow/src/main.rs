@@ -7,7 +7,7 @@ use std::{
 
 fn parse_input(input: &mut impl BufRead) -> (u64, u64) {
     type InputLine<'a> = (&'a str, u64, &'a str, u64, &'a str);
-    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+    fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
         (
             tag("To continue, please consult the code grid in the manual.  Enter the code at row "),
             complete::u64,

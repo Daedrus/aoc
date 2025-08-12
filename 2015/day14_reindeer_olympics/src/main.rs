@@ -16,7 +16,7 @@ struct Reindeer {
 
 fn parse_input(input: &mut impl BufRead) -> Vec<Reindeer> {
     type InputLine<'a> = (&'a str, &'a str, u32, &'a str, u32, &'a str, u32, &'a str);
-    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+    fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
         (
             complete::alpha1,
             tag(" can fly "),

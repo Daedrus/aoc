@@ -156,7 +156,7 @@ impl Unit {
 
 fn parse_input(input: &mut impl BufRead) -> Unit {
     type InputLine<'a> = (&'a str, i32, &'a str, i32, &'a str, i32);
-    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+    fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
         (
             tag("Hit Points: "),
             complete::i32,

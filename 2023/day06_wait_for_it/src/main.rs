@@ -16,7 +16,7 @@ fn parse_input(input: &mut impl BufRead) -> (Vec<u64>, Vec<u64>) {
     input.read_to_string(&mut lines).unwrap();
 
     type InputLine<'a> = (&'a str, &'a str, Vec<u64>, char, &'a str, &'a str, Vec<u64>);
-    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+    fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
         (
             tag("Time:"),
             space1,

@@ -33,7 +33,7 @@ impl From<&str> for Scratchcard {
             &'a str,
             Vec<u32>,
         );
-        fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+        fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
             (
                 tag("Card"),
                 multispace1,

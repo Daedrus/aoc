@@ -12,7 +12,7 @@ fn parse_input(input: &mut impl BufRead) -> (HashSet<String>, HashMap<(String, S
     let mut happiness_changes: HashMap<(String, String), i32> = HashMap::new();
 
     type InputLine<'a> = (&'a str, &'a str, i32, &'a str, &'a str, char);
-    fn parse_line(input: &str) -> IResult<&str, InputLine, Error<&str>> {
+    fn parse_line(input: &str) -> IResult<&str, InputLine<'_>, Error<&str>> {
         (
             complete::alpha1,
             alt((tag(" would gain "), tag(" would lose "))),
